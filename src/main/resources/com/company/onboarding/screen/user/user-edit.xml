@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://UserEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="userDc"
+                  class="com.company.onboarding.entity.User">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="department"/>
+                <property fetchPlan="_base" name="steps">
+                    <property name="step" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader/>
+            <collection id="stepsDc" property="steps"/>
+        </instance>
+        <collection id="departmentsDc" class="com.company.onboarding.entity.Department">
+            <fetchPlan extends="_base"/>
+            <loader id="departmentsDl">
+                <query>
+                    <![CDATA[select e from Department e
+                    order by e.name asc]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="windowCommitAndClose"
+                caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="userDc">
+            <column width="350px">
+                <textField id="usernameField" property="username" editable="false"/>
+                <passwordField id="passwordField"
+                               caption="msg://com.company.onboarding.entity/User.password"
+                               required="true"
+                               visible="false"/>
+                <passwordField id="confirmPasswordField"
+                               caption="msg://confirmPassword"
+                               required="true"
+                               visible="false"/>
+                <textField id="firstNameField" property="firstName"/>
+                <textField id="lastNameField" property="lastName"/>
+                <textField id="emailField" property="email"/>
+                <comboBox id="timeZoneField" property="timeZoneId"/>
+                <checkBox id="activeField" property="active"/>
+                <comboBox id="onboardingStatusField" property="onboardingStatus"/>
+                <entityComboBox id="departmentField" property="department" optionsContainer="departmentsDc"/>
+                <dateField id="joiningDateField" property="joiningDate"/>
+            </column>
+            <column>
+                <fileStorageUpload id="pictureField" property="picture"/>
+                <image id="image" property="picture"
+                       scaleMode="CONTAIN"
+                       rowspan="10" caption=""
+                       height="200" width="200"/>
+            </column>
+        </form>
+        <groupBox id="stepsBox" caption="msg://com.company.onboarding.entity/User.steps">
+            <table id="stepsTable" dataContainer="stepsDc" width="100%" height="200px">
+                <columns>
+                    <column id="completed" caption="" width="50"/>
+                    <column id="step.name"/>
+                    <column id="dueDate"/>
+                    <column id="completedDate"/>
+                </columns>
+                <buttonsPanel>
+                    <button id="generateButton" caption="msg://generateButton.caption"/>
+                </buttonsPanel>
+            </table>
+        </groupBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>
